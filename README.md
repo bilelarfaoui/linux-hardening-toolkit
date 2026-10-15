@@ -8,6 +8,22 @@ A small toolkit I put together to harden Linux servers and to measure the result
 
 The controls and the reasoning behind each one are in [docs/CHECKLIST.md](docs/CHECKLIST.md).
 
+
+
+linux-hardening-toolkit/
+├── audit/
+│   ├── hardening_audit.py        # read-only checker + score
+│   └── test_hardening_audit.py   # 12 unit tests
+├── scripts/
+│   └── apply_hardening.sh        # applies the baseline (dry run by default)
+├── configs/
+│   ├── 00-hardening.conf         # SSH settings
+│   └── 99-hardening-sysctl.conf  # kernel/network settings
+├── ansible/playbook.yml          # same baseline for many hosts
+├── docs/CHECKLIST.md             # every control and why it matters
+├── README.md, LICENSE, .gitignore
+
+
 ## Quick start
 
 ```bash
