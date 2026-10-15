@@ -65,7 +65,3 @@ The audit logic is unit tested. The apply script and Ansible playbook should be 
 ## Disclaimer
 
 Only run this on systems you own or are authorized to administer. Misconfigured SSH hardening can lock you out of a machine.
-
-## License
-
-MIT
