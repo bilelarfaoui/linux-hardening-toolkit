@@ -27,4 +27,4 @@ Every control the audit script checks, and why it matters.
 
 ## Not covered yet
 
-Firewall policy, auditd rules, PAM password policy, automatic security updates, filesystem mount options, and disabling unused services. These are good next additions.
+Firewall policy, auditd rules, PAM password policy, automatic security updates, filesystem mount options, and disabling unused services.
