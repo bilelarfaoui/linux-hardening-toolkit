@@ -1,0 +1,55 @@
+# Ansible version of the same baseline. Run against hosts you own:
+#   ansible-playbook -i inventory.ini ansible/playbook.yml --check --diff
+- name: Linux hardening baseline
+  hosts: all
+  become: true
+  vars:
+    ssh_service: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+
+  tasks:
+    - name: Ensure sshd_config.d exists
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d
+        state: directory
+        mode: "0755"
+
+    - name: Install SSH hardening drop-in
+      ansible.builtin.copy:
+        src: ../configs/00-hardening.conf
+        dest: /etc/ssh/sshd_config.d/00-hardening.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Validate and reload sshd
+
+    - name: Install sysctl hardening settings
+      ansible.builtin.copy:
+        src: ../configs/99-hardening-sysctl.conf
+        dest: /etc/sysctl.d/99-hardening.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload sysctl
+
+    - name: Tighten sensitive file permissions
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: /etc/ssh/sshd_config, mode: "0600" }
+        - { path: /etc/passwd, mode: "0644" }
+
+  handlers:
+    - name: Validate and reload sshd
+      ansible.builtin.command: sshd -t
+      changed_when: true
+      notify: Reload sshd
+
+    - name: Reload sshd
+      ansible.builtin.service:
+        name: "{{ ssh_service }}"
+        state: reloaded
+
+    - name: Reload sysctl
+      ansible.builtin.command: sysctl --system
+      changed_when: true
